@@ -154,6 +154,7 @@ function update() {
   score1.draw();
   score2.draw();
   unicorn.draw();
+  star.draw();
   meaning.draw();
   textColor.draw();
 }
@@ -200,7 +201,6 @@ function player2() {
   clearInterval(interval);
   frames = 0;
   score1.color = "white";
-  star.draw();
   user = score2;
   keepPlaying();
   //}
@@ -246,12 +246,7 @@ addEventListener('keydown', function(e) {
 //30 seconds it's the first setTimeout
 
 
-// var soundWin = new Howl({
-//   src: ['./sounds/bubbles.mp3']
-// });
-// var soundLose = new Howl({
-//   src: ['./sounds/clay.mp3']
-// });
+
 
 
 //Does the meaning match the text color?
