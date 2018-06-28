@@ -9,8 +9,20 @@ var user;
 var colors = ["black", "yellow", "orange", "red", "blue", "purple"];
 //we can save the images that we are going to use here
 var images = {
-  bg: "https://images.pexels.com/photos/248797/pexels-photo-248797.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=512&w=1024",
+  bg: 'https://images.pexels.com/photos/248797/pexels-photo-248797.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=512&w=1024',
+  unicorn: './images/unicorn.png',
+  star: './images/star.png'
 };
+
+var sounds = {
+  win: './sounds/bubbles.mp3',
+  lose: './sounds/clay.mp3'
+}
+
+var soundWin = new Audio();
+soundWin.src = sounds.win;
+var soundLose = new Audio();
+soundLose.src = sounds.lose;
 
 //2.Classes
 class Board {
@@ -60,6 +72,17 @@ class Text extends Score {
   } 
 }
 
+class Explain extends Score {
+  constructor(x, y, color, text) {
+    super(x, y, color, text);
+  }
+  draw() {   
+    ctx.fillStyle = this.color;
+    ctx.font = 'italic 30px Avenir';
+    ctx.fillText(this.text, this.x, this.y); 
+  } 
+}
+
 class Card {
   constructor(x, y, initialAngle, finalAngle) {
     this.x = x;
@@ -79,15 +102,37 @@ class Card {
   } 
 }
 
+class Player {
+  constructor(x, y, img, width, height) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+    this.image = new Image();
+    this.image.src = img;
+    this.image.onload = function() {
+      this.draw();
+    }.bind(this);
+  }
+  draw(){ //we draw the image outside the constructor, but inside our class, we include the timer and the scores 
+    ctx.drawImage(this.image, this.x, this.y, this.width,this.height);
+  }
+}
+
+
 //3.Instances
 var board = new Board();
-var timer = new Score(canvas.width/2 - 29, 55, "black", "00");
-var score1 = new Score(850, 60, "white", 0);
-var score2 = new Score(950, 60, "white", 0);
+var timer = new Score(canvas.width/2 - 29, 55, 'black', '00');
+var score1 = new Score(850, 60, 'white', 0);
+var score2 = new Score(950, 60, 'white', 0);
 var cardTop = new Card(canvas.width / 2, 280, Math.PI, Math.PI * 2);
 var cardBottom = new Card(canvas.width / 2, 320, Math.PI * 2, Math.PI);
-var text1 = new Text(canvas.width/2 - 90, 210, "black", generateColor());
+var text1 = new Text(canvas.width/2 - 90, 210, 'black', generateColor());
 var text2 = new Text(canvas.width/2 - 90, 400, generateColor(), generateColor());
+var unicorn = new Player(845, 60, images.unicorn, 50, 50);
+var star = new Player(945, 65, images.star, 40, 40);
+var meaning = new Explain(100, 250, 'black', 'meaning>');
+var textColor = new Explain(100, 380, 'black', 'text color>');
 
 user = score1;
 
@@ -108,11 +153,13 @@ function update() {
   timer.draw();
   score1.draw();
   score2.draw();
+  unicorn.draw();
+  meaning.draw();
+  textColor.draw();
 }
 
 function start() {
   interval = setInterval(update, 1000);
-  //console.log(interval)
 }
 
 //5.Aux f(s)s
@@ -122,20 +169,20 @@ function generateColor() {
 
 function checkIfCorrect(score, answer) {
   if(text1.text === text2.color && answer === true) {
-    //soundWin.play();
+    soundWin.play();
     score.color = "green";
     score.text++;
     keepPlaying();  
   } else if(text1.text === text2.color && answer === false) {
-    //soundLose.play();
+    soundLose.play();
     score.color = "red";
     keepPlaying(); 
   } else if(text1.text !== text2.color && answer === true) {
-    //soundLose.play();
+    soundLose.play();
     score.color = "red";
     keepPlaying();
   } else if(text1.text !== text2.color && answer === false) {
-    //soundWin.play();
+    soundWin.play();
     score.color = "green";
     score.text++;
     keepPlaying(); 
@@ -153,6 +200,7 @@ function player2() {
   clearInterval(interval);
   frames = 0;
   score1.color = "white";
+  star.draw();
   user = score2;
   keepPlaying();
   //}
@@ -180,7 +228,9 @@ addEventListener('keydown', function(e) {
 
 
 //levels?
-//As soon as the start button or the enter key are pressed, the game begins
+//Errores: dejar las instruccions al usuario para el final
+//challenges, incluir las instrucciones, incorporar al jugador 2, 
+//As soon as the space bar is pressed, the game begins
 //That means the set of cards are displayed and the explaining widgets that give the user a hint of how to play 
 //prompt are your ready? yes no
 //if yes start the timer
@@ -204,7 +254,8 @@ addEventListener('keydown', function(e) {
 // });
 
 
-
+//Does the meaning match the text color?
+//Meaning - text color
 
 // document.getElementById("start").addEventListener('click', function(){
 //   //7.Start the game
