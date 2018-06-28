@@ -65,21 +65,10 @@ class Text extends Score {
   }
   draw() {   
     ctx.fillStyle = this.color;
-    ctx.font = '60px Avenir';
+    ctx.font = 'bold 80px Avenir';
     var metrics = ctx.measureText(this.text);
     var width = metrics.width; 
     ctx.fillText(this.text, canvas.width/2 - width/2, this.y); 
-  } 
-}
-
-class Explain extends Score {
-  constructor(x, y, color, text) {
-    super(x, y, color, text);
-  }
-  draw() {   
-    ctx.fillStyle = this.color;
-    ctx.font = 'italic 30px Avenir';
-    ctx.fillText(this.text, this.x, this.y); 
   } 
 }
 
@@ -119,20 +108,19 @@ class Player {
   }
 }
 
-
 //3.Instances
 var board = new Board();
 var timer = new Score(canvas.width/2 - 29, 55, 'black', '00');
 var score1 = new Score(850, 60, 'white', 0);
 var score2 = new Score(950, 60, 'white', 0);
 var cardTop = new Card(canvas.width / 2, 280, Math.PI, Math.PI * 2);
-var cardBottom = new Card(canvas.width / 2, 320, Math.PI * 2, Math.PI);
+var cardBottom = new Card(canvas.width / 2, 315, Math.PI * 2, Math.PI);
 var text1 = new Text(canvas.width/2 - 90, 210, 'black', generateColor());
 var text2 = new Text(canvas.width/2 - 90, 400, generateColor(), generateColor());
 var unicorn = new Player(845, 60, images.unicorn, 50, 50);
 var star = new Player(945, 65, images.star, 40, 40);
-var meaning = new Explain(100, 250, 'black', 'meaning>');
-var textColor = new Explain(100, 380, 'black', 'text color>');
+// var meaning = new Explain(100, 250, 'black', 'meaning>');
+// var textColor = new Explain(100, 380, 'black', 'text color>');
 
 user = score1;
 
@@ -155,8 +143,8 @@ function update() {
   score2.draw();
   unicorn.draw();
   star.draw();
-  meaning.draw();
-  textColor.draw();
+  //meaning.draw();
+  //textColor.draw();
 }
 
 function start() {
@@ -197,35 +185,61 @@ function keepPlaying() {
 } 
 
 function player2() {
-  //if (frames === 30) {
   clearInterval(interval);
   frames = 0;
   score1.color = "white";
   user = score2;
   keepPlaying();
-  //}
+  start();
+}
+
+function afterGame() {
+  if(score1.text > score2.text){
+    document.getElementsByTagName('h1').innerHTML = 'UNICORN WINS!';
+  } else {
+    document.getElementsByTagName('h1').innerHTML = 'STAR WINS!'
+  }
+
 }
 
 //6.Listeners 
-addEventListener('keydown', function(e) {
-  switch(e.keyCode) {
-    case 32: 
-    start();
-    //document.getElementById('start').innerHTML = 'Player 2';
-    break;
-    case 37: //arrow left no 
-    checkIfCorrect(user, false);
-    break;
-    case 39: //arrow right yes 
-    checkIfCorrect(user,true);
-    break;
-    case 78: 
-    player2();
-  }
+document.getElementById("start").addEventListener('click', function(){
+  //7.Start the game
+  start();
 });
 
+document.getElementById("player-2").addEventListener('click', function(e){
+  //Start the second game
+  console.log(e);
+  player2();
+});
 
+document.getElementById("yes").addEventListener('click', function(){
+//console.log(e);
+  checkIfCorrect(user,true);
+});
 
+document.getElementById("no").addEventListener('click', function(){
+  //console.log(e);
+  checkIfCorrect(user, false);
+});
+
+// addEventListener('keydown', function(e) {
+//   switch(e.keyCode) {
+//     case 32: 
+//     start();
+//     //document.getElementById('start').innerHTML = 'Player 2';
+//     break;
+//     case 37: //arrow left no 
+//     checkIfCorrect(user, false);
+//     break;
+//     case 39: //arrow right yes 
+//     checkIfCorrect(user,true);
+//     break;
+//     case 78: 
+//     player2();
+//   }
+// });
 
 //levels?
 //Errores: dejar las instruccions al usuario para el final
@@ -281,5 +295,16 @@ addEventListener('keydown', function(e) {
 //     var metrics = ctx.measureText(this.text);
 //     var width = metrics.width; 
 //     ctx.fillText(this.text, canvas.width/2 - width/2, this.y); 
+//   } 
+// }
+
+// class Explain extends Score {
+//   constructor(x, y, color, text) {
+//     super(x, y, color, text);
+//   }
+//   draw() {   
+//     ctx.fillStyle = this.color;
+//     ctx.font = 'italic 30px Avenir';
+//     ctx.fillText(this.text, this.x, this.y); 
 //   } 
 // }
