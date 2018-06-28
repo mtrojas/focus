@@ -4,11 +4,12 @@ var ctx = canvas.getContext('2d');
 //1.Constants
 var interval;
 var frames = 0;
+var user;
 //here we save an array of colors that we can assign randomly as a text to the first word and as a font color to the second word
 var colors = ["black", "yellow", "orange", "red", "blue", "purple"];
 //we can save the images that we are going to use here
 var images = {
-  bg: "https://images.pexels.com/photos/248797/pexels-photo-248797.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+  bg: "https://images.pexels.com/photos/248797/pexels-photo-248797.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=512&w=1024",
 };
 
 //2.Classes
@@ -18,8 +19,6 @@ class Board {
     this.y = 0;
     this.width = canvas.width;
     this.height = canvas.height;
-    this.scorePlayer1 = 0;
-    this.scorePlayer2 = 0;
     this.image = new Image();
     this.image.src = images.bg;
     this.image.onload = function() {
@@ -31,7 +30,7 @@ class Board {
   }
 }
 
-class Text {
+class Score {
   constructor(x, y, color, text) {
     this.x = x;
     this.y = y;
@@ -39,21 +38,58 @@ class Text {
     this.height = 100;
     this.color = color;
     this.text = text;
+
   }
   draw() {   
     ctx.fillStyle = this.color;
-    ctx.font = '60px Avenir'; 
+    ctx.font = '60px Avenir';
     ctx.fillText(this.text, this.x, this.y); 
+  } 
+}
+
+class Text extends Score {
+  constructor(x, y, color, text) {
+    super(x, y, color, text);
+  }
+  draw() {   
+    ctx.fillStyle = this.color;
+    ctx.font = '60px Avenir';
+    var metrics = ctx.measureText(this.text);
+    var width = metrics.width; 
+    ctx.fillText(this.text, canvas.width/2 - width/2, this.y); 
+  } 
+}
+
+class Card {
+  constructor(x, y, initialAngle, finalAngle) {
+    this.x = x;
+    this.y = y
+    this.width = 130;
+    this.height = 60;
+    this.initialAngle = initialAngle;
+    this.finalAngle = finalAngle;
+  }
+  draw() {
+    ctx.beginPath();
+    ctx.strokeStyle = 'rgba(255, 255, 255, .5)';
+    ctx.fillStyle = 'rgba(255, 255, 255, .5)';
+    ctx.arc(this.x, this.y, 180, this.initialAngle, this.finalAngle, false);
+    ctx.fill();
+    ctx.closePath();    
   } 
 }
 
 //3.Instances
 var board = new Board();
-var text1 = new Text(canvas.width/2 - 100, 300, "black", generateColor());
-var text2 = new Text(canvas.width/2 - 100, 400, generateColor(), generateColor());
-var timer = new Text(canvas.width/2 - 100, 500, "black", "00");
-var score1 = new Text(900, 60, "white", 0);
-var score2 = new Text(980, 60, "white", 0);
+var timer = new Score(canvas.width/2 - 29, 55, "black", "00");
+var score1 = new Score(850, 60, "white", 0);
+var score2 = new Score(950, 60, "white", 0);
+var cardTop = new Card(canvas.width / 2, 280, Math.PI, Math.PI * 2);
+var cardBottom = new Card(canvas.width / 2, 320, Math.PI * 2, Math.PI);
+var text1 = new Text(canvas.width/2 - 90, 210, "black", generateColor());
+var text2 = new Text(canvas.width/2 - 90, 400, generateColor(), generateColor());
+
+user = score1;
 
 //4.Main f(x)s
 function update() {
@@ -65,6 +101,8 @@ function update() {
   } 
   ctx.clearRect(0, 0, canvas.width, canvas.height) //siempre borra primero
   board.draw();
+  cardTop.draw();
+  cardBottom.draw();
   text1.draw();
   text2.draw();
   timer.draw();
@@ -81,24 +119,25 @@ function start() {
 function generateColor() {
   return colors[ Math.floor(Math.random() * colors.length)];
 }
-// function generateColor2() {
-//   return colors[ Math.floor(Math.random() * colors.length)];
-// }
 
-function checkIfCorrect(answer) {
+function checkIfCorrect(score, answer) {
   if(text1.text === text2.color && answer === true) {
-    score1.color = "green";
-    score1.text++;
+    //soundWin.play();
+    score.color = "green";
+    score.text++;
     keepPlaying();  
   } else if(text1.text === text2.color && answer === false) {
-    score1.color = "red";
+    //soundLose.play();
+    score.color = "red";
     keepPlaying(); 
   } else if(text1.text !== text2.color && answer === true) {
-    score1.color = "red";
+    //soundLose.play();
+    score.color = "red";
     keepPlaying();
   } else if(text1.text !== text2.color && answer === false) {
-    score1.color = "green";
-    score1.text++;
+    //soundWin.play();
+    score.color = "green";
+    score.text++;
     keepPlaying(); 
   }
 }
@@ -109,26 +148,35 @@ function keepPlaying() {
   text2.text = generateColor();
 } 
 
-function game2() {
-
+function player2() {
+  //if (frames === 30) {
+  clearInterval(interval);
+  frames = 0;
+  score1.color = "white";
+  user = score2;
+  keepPlaying();
+  //}
 }
-
 
 //6.Listeners 
 addEventListener('keydown', function(e) {
   switch(e.keyCode) {
     case 32: 
     start();
-    document.getElementById('start').innerHTML = 'Player 2';
+    //document.getElementById('start').innerHTML = 'Player 2';
     break;
     case 37: //arrow left no 
-    checkIfCorrect(false);
+    checkIfCorrect(user, false);
     break;
     case 39: //arrow right yes 
-    checkIfCorrect(true);
+    checkIfCorrect(user,true);
     break;
+    case 78: 
+    player2();
   }
 });
+
+
 
 
 //levels?
@@ -148,23 +196,15 @@ addEventListener('keydown', function(e) {
 //30 seconds it's the first setTimeout
 
 
+// var soundWin = new Howl({
+//   src: ['./sounds/bubbles.mp3']
+// });
+// var soundLose = new Howl({
+//   src: ['./sounds/clay.mp3']
+// });
 
-// class Card {
-//   constructor(y, color) {
-//     this.x = 100;
-//     this.y = y
-//     this.width = 200;
-//     this.height = 100;
-//     this.color = color ? color : 'white';
-//   }
-//   draw() {
-//     ctx.beginPath();
-//     ctx.strokeStyle = "white";
-//     ctx.arc(this.x, this.y, 200, Math.PI, Math.PI * 2, true);
-//     ctx.stroke();
-//     ctx.closePath();    
-//   } 
-// }
+
+
 
 // document.getElementById("start").addEventListener('click', function(){
 //   //7.Start the game
@@ -178,3 +218,22 @@ addEventListener('keydown', function(e) {
 // document.getElementById("no").addEventListener('click', function(e){
 //   console.log(e);
 // });
+
+
+// class Text {
+//   constructor(x, y, color, text) {
+//     this.x = x;
+//     this.y = y;
+//     this.width = 200;
+//     this.height = 100;
+//     this.color = color;
+//     this.text = text;
+//   }
+//   draw() {   
+//     ctx.fillStyle = this.color;
+//     ctx.font = '60px Avenir';
+//     var metrics = ctx.measureText(this.text);
+//     var width = metrics.width; 
+//     ctx.fillText(this.text, canvas.width/2 - width/2, this.y); 
+//   } 
+// }
