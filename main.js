@@ -145,6 +145,7 @@ function update() {
   star.draw();
   //meaning.draw();
   //textColor.draw();
+  afterGame();
 }
 
 function start() {
@@ -191,15 +192,27 @@ function player2() {
   user = score2;
   keepPlaying();
   start();
+  
 }
 
 function afterGame() {
-  if(score1.text > score2.text){
-    document.getElementsByTagName('h1').innerHTML = 'UNICORN WINS!';
-  } else {
-    document.getElementsByTagName('h1').innerHTML = 'STAR WINS!'
+  console.log('antes de decidir')
+  if(user == score2 && frames === 30) {
+    score2.color = "white";
+    console.log('ya hay ganador')
+    if(score1.text > score2.text){
+      document.getElementById('winner').innerHTML = 'UNICORN WINS!';
+      document.getElementById('keep-practice').innerHTML = 'Keep practicing';
+      console.log('user unicorn wins')
+    } else if(score1.text < score2.text){
+      document.getElementById('winner').innerHTML = 'STAR WINS!';
+      document.getElementById('keep-practice').innerHTML = 'Keep practicing';
+      console.log('user star wins')
+    } else if(score1.text === score2.text) {
+      document.getElementById('winner').innerHTML = 'GREAT GAME!';
+      document.getElementById('keep-practice').innerHTML = 'Keep practicing';
+    }
   }
-
 }
 
 //6.Listeners 
@@ -208,9 +221,8 @@ document.getElementById("start").addEventListener('click', function(){
   start();
 });
 
-document.getElementById("player-2").addEventListener('click', function(e){
+document.getElementById("player-2").addEventListener('click', function(){
   //Start the second game
-  console.log(e);
   player2();
 });
 
