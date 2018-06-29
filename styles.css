@@ -4,6 +4,7 @@ body {
     margin: 0;
     font-family: "Montserrat", "Avenir";  
 }
+
 canvas {
   padding: 0;
   margin: auto;
@@ -18,6 +19,11 @@ h1 {
 	font-weight: normal;
 	/*line-height: 1.1;*/
 	padding: 5px 0;
+}
+
+span {
+  font-family: 'Pacifico', cursive;
+  font-size: 48px;
 }
 
 button {
@@ -40,24 +46,11 @@ button:hover {
 	background:rgb(103, 210,229);
 }
 
-span {
-  font-family: 'Pacifico', cursive;
-  font-size: 48px;
-}
 
 .stripe {
 	background-color: white;
 	height: 30px;
 	text-align: center;
-}
-
-p {
-	text-align: center;
-	color: white;
-	font-family: "Montserrat", "Avenir";
-	font-size: 18px;
-	padding: 0;
-	margin: 0;
 }
 
 #keep-practice {
