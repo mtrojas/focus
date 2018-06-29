@@ -54,10 +54,17 @@ button:hover {
 }
 
 #keep-practice {
+	margin-top: 0;
 	text-align: center;
-	font-family: "Montserrat", "Avenir";
+	font-family: 'Pacifico', cursive;
 	color: #fff;
+	font-size: 80px;
+	background: -webkit-linear-gradient(#A83279, #D38312);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
+
+
 
 
 

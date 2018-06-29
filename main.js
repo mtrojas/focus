@@ -194,14 +194,14 @@ function afterGame() {
   if(user == score2 && frames === 30) {
     score2.color = "white";
     if(score1.text > score2.text){
-      document.getElementById('winner').innerHTML = 'UNICORN WINS!';
-      document.getElementById('keep-practice').innerHTML = 'Keep practicing ; )';
+      document.getElementById('winner').innerHTML = '';
+      document.getElementById('keep-practice').innerHTML = 'UNICORN WINS!';
     } else if(score1.text < score2.text){
-      document.getElementById('winner').innerHTML = 'STAR WINS!';
-      document.getElementById('keep-practice').innerHTML = 'Keep practicing ; )';
+      document.getElementById('winner').innerHTML = '';
+      document.getElementById('keep-practice').innerHTML = 'STAR WINS!';
     } else if(score1.text === score2.text) {
-      document.getElementById('winner').innerHTML = 'GREAT GAME!';
-      document.getElementById('keep-practice').innerHTML = 'Keep practicing : )';
+      document.getElementById('winner').innerHTML = '';
+      document.getElementById('keep-practice').innerHTML = 'GREAT GAME!';
     }
   }
 }
